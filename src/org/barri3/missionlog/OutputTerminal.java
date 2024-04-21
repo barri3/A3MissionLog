@@ -4,6 +4,8 @@
  */
 package org.barri3.missionlog;
 
+import java.io.File;
+import javax.imageio.ImageIO;
 import uk.co.gamebrewers.common.terminal.CTerminal;
 
 /**
@@ -16,11 +18,20 @@ public class OutputTerminal extends AbstractOutput {
     public OutputTerminal() {
         terminal = new CTerminal();
         terminal.setTitle("A3MissionLog - Barri3.org");
+        setIcon();
         terminal.getCloseRequestedEvent().add((e) -> {
             terminal.close();
             MissionLog.canContinue = false;
             MissionLog.out.appendSystem("Terminal thread has ended");
         });
+    }
+    
+    private void setIcon() {
+        try {
+            terminal.setIcon(ImageIO.read(new File("icon32.png")));
+        } catch (Exception err) {
+            append("WRN", err.getClass().getName() + ": " + err.getMessage());
+        }
     }
 
     @Override
