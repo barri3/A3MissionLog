@@ -32,7 +32,7 @@ public class SourceLocal extends AbstractSource {
                 return;
             }
             
-            MissionLog.out.append("SYS", "Using root directory: " + root);
+            MissionLog.out.appendSystem("Using root directory: " + root);
             
             FileReader reader = null;
             BufferedReader in = null;
@@ -42,7 +42,7 @@ public class SourceLocal extends AbstractSource {
                     File newFile = logDirectoryChecker.scan(root);
                     
                     if (newFile != null) {
-                        MissionLog.out.append("SYS", "Openning " + newFile);
+                        MissionLog.out.appendSystem("Openning " + newFile);
                         
                         if (in != null) {
                             in.close();
@@ -55,7 +55,7 @@ public class SourceLocal extends AbstractSource {
                         reader = new FileReader(newFile);
                         in = new BufferedReader(reader);
                     }
-                } else if (in != null) {
+                } else if (in != null && in.ready()) {
                     while (in.ready()) {
                         String line = in.readLine();
                         

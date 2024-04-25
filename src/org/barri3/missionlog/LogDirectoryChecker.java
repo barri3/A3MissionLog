@@ -42,6 +42,7 @@ public class LogDirectoryChecker {
             current = needsToBe;
         }
         
+        fileTick = 0;
         return newFile;
     }
     

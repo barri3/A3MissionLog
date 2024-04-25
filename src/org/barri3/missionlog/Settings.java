@@ -26,7 +26,7 @@ public class Settings {
     public static String logDir = null;
     public static String serverAddr = null;
     public static int serverPort = DEFAULT_PORT;
-    public static int fileRefresh = 40;
+    public static int fileRefresh = 1200;
     public static int tickRate = 25;
     public static boolean forceSystem = false;
     public static boolean forceTerminal = false;
