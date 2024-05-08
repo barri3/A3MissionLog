@@ -4,6 +4,8 @@
  */
 package org.barri3.missionlog;
 
+import org.barri3.missionlog.server.Server;
+
 /**
  *
  * @author BARRI3

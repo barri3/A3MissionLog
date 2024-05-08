@@ -7,7 +7,6 @@ package org.barri3.missionlog;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import uk.co.gamebrewers.common.commentator.Commentator;
 import uk.co.gamebrewers.common.threading.ThreadingUtil;
 
 /**
@@ -15,10 +14,16 @@ import uk.co.gamebrewers.common.threading.ThreadingUtil;
  * @author GB-BARRI3
  */
 public class SourceLocal extends AbstractSource {
+    private AbstractOutput out = null;
     private LogDirectoryChecker logDirectoryChecker = null;
     
-    public SourceLocal() {
+    public SourceLocal(AbstractOutput out) {
+        this.out = out;
         logDirectoryChecker = new LogDirectoryChecker();
+    }
+    
+    public SourceLocal() {
+        this(MissionLog.out);
     }
     
     @Override
@@ -32,7 +37,7 @@ public class SourceLocal extends AbstractSource {
                 return;
             }
             
-            MissionLog.out.appendSystem("Using root directory: " + root);
+            out.appendSystem("Using root directory: " + root);
             
             FileReader reader = null;
             BufferedReader in = null;
@@ -60,9 +65,9 @@ public class SourceLocal extends AbstractSource {
                         String line = in.readLine();
                         
                         if (line.length() >= 9 && line.substring(9).contentEquals("\"###### ###### ###### ###### FRESH STARTUP ###### ###### ###### ######\"")) {
-                            MissionLog.out.clear();
+                            out.clear();
                         } else {
-                            MissionLog.out.append(line);
+                            out.append(line);
                         }
                     }
                 } else {
@@ -72,9 +77,9 @@ public class SourceLocal extends AbstractSource {
                 logDirectoryChecker.tick();
             }
         } catch (Exception err) {
-            MissionLog.out.handleError(err);
+            out.handleError(err);
         }
         
-        MissionLog.out.appendSystem("Scanning thread has ended");
+        out.appendSystem("Scanning thread has ended");
     }
 }
