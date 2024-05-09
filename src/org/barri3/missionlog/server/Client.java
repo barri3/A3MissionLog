@@ -4,14 +4,29 @@
  */
 package org.barri3.missionlog.server;
 
+import java.net.Socket;
+
 /**
  *
  * @author GB-BARRI3
  */
 public class Client {
-    // Settings.maxClientFails - kick when reached
+    private boolean isDormant = false;
+    
+    public void bind(Socket socket) {
+        // send OK response here
+    }
     
     public void disconnect() {
         
+        isDormant = true;
+    }
+    
+    public void send(byte[] b) {
+        
+    }
+    
+    public boolean isDormant() {
+        return isDormant;
     }
 }

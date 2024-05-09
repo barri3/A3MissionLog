@@ -47,12 +47,7 @@ public class Server {
                 }
                 
                 Socket clientSocket = socket.accept();
-                
-                // check capacity
-                
-                // check password
-                
-                // add to clients
+                acceptOrRejectClient(clientSocket);
                 
                 serverLoopFailCounter = 0;
             } catch (Exception err) {
@@ -63,6 +58,53 @@ public class Server {
         }
         
         MissionLog.out.appendSystem("Server shutdown");
+    }
+    
+    private void acceptOrRejectClient(Socket clientSocket) {
+        String message = "Unable to read handshake";
+        
+        try {
+            Client slot = getClientSlot();
+            boolean isFull = slot == null;
+            boolean isPasswordCorrect = (isFull) ? (false) : (isPasswordCorrect(clientSocket));
+            
+            if (isFull || !isPasswordCorrect) {
+                message = "Unknown server rejection";
+                
+                if (isFull) {
+                    message = "Server is full";
+                } else if (!isPasswordCorrect) {
+                    message = "Password is incorrect";
+                }
+                
+                byte[] response = MessagePacker.pack(MessageType.CONNECTION_REJECTED, message);
+                clientSocket.getOutputStream().write(response);
+                clientSocket.getOutputStream().flush();
+                clientSocket.close();
+                
+                MissionLog.out.append("NET", "Client rejected: " + message);
+            } else {
+                slot.bind(clientSocket);
+            }
+        } catch (Exception err) {
+            MissionLog.out.append("NET", "Client rejected: " + message);
+            MissionLog.out.handleError(err);
+        }
+    }
+    
+    private Client getClientSlot() {
+        for (int clientIndex = 0; clientIndex < clients.length; clientIndex++) {
+            if (clients[clientIndex] == null || clients[clientIndex].isDormant()) {
+                clients[clientIndex] = new Client();
+                return clients[clientIndex];
+            }
+        }
+        
+        return null;
+    }
+    
+    private boolean isPasswordCorrect(Socket clientSocket) {
+        return false;
     }
     
     private void createServerSocket() throws Exception {
