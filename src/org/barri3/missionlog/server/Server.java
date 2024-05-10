@@ -9,6 +9,7 @@ import java.net.Socket;
 import org.barri3.missionlog.MissionLog;
 import org.barri3.missionlog.Settings;
 import org.barri3.missionlog.SourceLocal;
+import uk.co.gamebrewers.bookworm.CBookwormBinarizer;
 
 /**
  *
@@ -104,6 +105,19 @@ public class Server {
     }
     
     private boolean isPasswordCorrect(Socket clientSocket) {
+        try {
+            byte[] passwordLength = clientSocket.getInputStream().readNBytes(4);
+            int length = CBookwormBinarizer.intFromBytes(passwordLength);
+
+            byte[] passwordData = clientSocket.getInputStream().readNBytes(length);
+            String password = new String(passwordData);
+            
+            return password.contentEquals(Settings.serverPassword);
+        } catch (Exception err) {
+            MissionLog.out.append("NET", "Password comparison failed");
+            MissionLog.out.handleError(err);
+        }
+        
         return false;
     }
     
